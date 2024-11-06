@@ -2,7 +2,7 @@ import itertools
 import time
 import copy
 import matplotlib.pyplot as plt
-from cube.cube import MagicCube
+from cube.cube_test import MagicCube
 
 class SteepestAscentHillClimbing:
     def __init__(self, magic_cube):
@@ -80,7 +80,7 @@ class SteepestAscentHillClimbing:
         plt.grid(True)
         plt.show()
         
-# Example usage
+# usage
 if __name__ == "__main__":
     cube = MagicCube(size=5)
     hill_climber = SteepestAscentHillClimbing(cube)
