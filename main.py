@@ -5,9 +5,7 @@ import algorithms.simulated_annealing
 import algorithms.steepest_ascent_hill_climbing
 import algorithms.stochastic_hill_climbing
 from cube.cube import MagicCube
-import algorithms
 import copy
-import matplotlib.pyplot as plt
 
 # Algorithm selection constants
 STEEPEST_ASCENT_HC = 1
@@ -31,27 +29,44 @@ def select_search_algo(value: int):
     else:
         raise ValueError("Invalid algorithm selection. Please choose a number between 1 and 6.")
 
+# Get additional parameters for specific algorithms
+def get_algorithm_parameters():
+    params = {}
+    if SEARCH_ALGO == RANDOM_RESTART_HC:
+        params['max_restarts'] = int(input("Enter max restarts for Random Restart Hill Climbing: "))
+    elif SEARCH_ALGO == SIDEWAYS_MOVE_HC:
+        params['max_sideways'] = int(input("Enter max sideways moves for Hill Climbing with Sideways Move: "))
+    elif SEARCH_ALGO == SIMULATED_ANNEALING:
+        params['initial_temp'] = float(input("Enter initial temperature for Simulated Annealing: "))
+        params['cooling_rate'] = float(input("Enter cooling rate for Simulated Annealing (e.g., 0.95): "))
+    elif SEARCH_ALGO == GENETIC_ALGORITHM:
+        params['population_size'] = int(input("Enter population size for Genetic Algorithm: "))
+        params['mutation_rate'] = float(input("Enter mutation rate for Genetic Algorithm (e.g., 0.01): "))
+    elif SEARCH_ALGO == STOCHASTIC_HC:
+        params['max_trials'] = int(input("Enter max trials for Stochastic Hill Climbing: "))
+    return params
+
 # Start the local search based on the selected algorithm
-def start_search(magic_cube):
+def start_search(magic_cube, params):
     print("\nStarting Local Search...")
 
     # Create a deep copy of the cube to ensure the search runs on a fresh copy
     cube_copy = copy.deepcopy(magic_cube)
     
     try:
-        # Instantiate and run the selected search algorithm
+        # Instantiate and run the selected search algorithm with parameters
         if SEARCH_ALGO == STEEPEST_ASCENT_HC:
             algorithm = algorithms.steepest_ascent_hill_climbing.SteepestAscentHillClimbing(cube_copy)
         elif SEARCH_ALGO == STOCHASTIC_HC:
-            algorithm = algorithms.stochastic_hill_climbing.StochasticHillClimbing(cube_copy)
+            algorithm = algorithms.stochastic_hill_climbing.StochasticHillClimbing(cube_copy, **params)
         elif SEARCH_ALGO == SIDEWAYS_MOVE_HC:
-            algorithm = algorithms.hill_climbing_with_sideways_move.HillClimbingWithSidewaysMove(cube_copy)
+            algorithm = algorithms.hill_climbing_with_sideways_move.HillClimbingWithSidewaysMove(cube_copy, **params)
         elif SEARCH_ALGO == RANDOM_RESTART_HC:
-            algorithm = algorithms.random_restart_hill_climbing.RandomRestartHillClimbing(cube_copy)
+            algorithm = algorithms.random_restart_hill_climbing.RandomRestartHillClimbing(cube_copy, **params)
         elif SEARCH_ALGO == SIMULATED_ANNEALING:
-            algorithm = algorithms.simulated_annealing.SimulatedAnnealing(cube_copy)
+            algorithm = algorithms.simulated_annealing.SimulatedAnnealing(cube_copy, **params)
         elif SEARCH_ALGO == GENETIC_ALGORITHM:
-            algorithm = algorithms.genetic_algorithm.GeneticAlgorithm(cube_copy)
+            algorithm = algorithms.genetic_algorithm.GeneticAlgorithm(cube_copy, **params)
         else:
             raise ValueError("Selected algorithm is not implemented.")
         
@@ -98,8 +113,11 @@ def main():
             except ValueError as e:
                 print(f"Error: {e}. Please enter a valid number between 0 and 6.")
 
-        # Start the search based on the selected algorithm
-        start_search(mc)
+        # Get additional parameters for the selected algorithm
+        params = get_algorithm_parameters()
+
+        # Start the search based on the selected algorithm and parameters
+        start_search(mc, params)
 
 if __name__ == "__main__":
     main()
