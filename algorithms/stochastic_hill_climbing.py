@@ -1,48 +1,41 @@
 import random
 import copy
 import time
+import datetime
 import matplotlib.pyplot as plt
 from cube.cube import MagicCube  # Impor kelas MagicCube dari cube.py
 
 class StochasticHillClimbing:
     def __init__(self, magic_cube, max_trials=10000):
-        """
-        Inisialisasi algoritma Stochastic Hill Climbing.
-
-        Parameters:
-        - magic_cube: objek MagicCube yang menjadi kubus awal.
-        - max_trials: batas maksimum percobaan sebelum berhenti.
-        """
         self.magic_cube = magic_cube
         self.max_trials = max_trials
-        self.history = []  # Menyimpan nilai objective function untuk setiap percobaan
-        self.iterations = 0  # Menyimpan jumlah iterasi
-        self.duration = 0  # Menyimpan durasi pencarian
+        self.iterations = 0
+        self.start_time = None
+        self.end_time = None
+        self.objective_values = []  # Menyimpan nilai objective function untuk setiap percobaan
+        self.initial_cube = copy.deepcopy(self.magic_cube.data)  # Salin kondisi awal kubus
+        self.final_cube = None  # Menyimpan kondisi akhir kubus
 
     def run(self):
-        """
-        Jalankan algoritma Stochastic Hill Climbing untuk menemukan solusi terbaik.
-        """
         # Simpan waktu mulai
-        start_time = time.time()
+        self.start_time = time.time()
 
-        # Simpan nilai objektif dari kondisi awal kubus
-        current_cube = copy.deepcopy(self.magic_cube)  # Duplikasi objek awal
-        initial_state = copy.deepcopy(current_cube.data)  # Simpan state awal
-        current_cost = current_cube.objective_function()  # Hitung nilai objektif awal
-        self.history.append(current_cost)
+        # Nilai objektif dari kondisi awal kubus
+        current_cube = copy.deepcopy(self.initial_cube)
+        current_cost = self.objective_function(current_cube)
+        self.objective_values.append(current_cost)
 
-        for trial in range(self.max_trials):
+        for _ in range(self.max_trials):
             self.iterations += 1
 
             # Buat tetangga dengan menukar dua posisi acak
             neighbor_cube = copy.deepcopy(current_cube)
             pos1 = self._random_position()
             pos2 = self._random_position(different_from=pos1)
-            neighbor_cube.swap(pos1, pos2)  # Tukar dua angka di posisi acak
+            self.swap(neighbor_cube, pos1, pos2)
 
             # Hitung nilai objektif dari tetangga
-            neighbor_cost = neighbor_cube.objective_function()
+            neighbor_cost = self.objective_function(neighbor_cube)
 
             # Jika tetangga lebih baik, pindah ke state tersebut
             if neighbor_cost < current_cost:
@@ -50,34 +43,25 @@ class StochasticHillClimbing:
                 current_cost = neighbor_cost
 
             # Simpan nilai objektif untuk setiap percobaan
-            self.history.append(current_cost)
+            self.objective_values.append(current_cost)
 
             # Berhenti jika solusi optimal (biaya 0) ditemukan
             if current_cost == 0:
                 print(f"Solusi optimal ditemukan pada iterasi {self.iterations}")
                 break
 
-        # Simpan waktu selesai dan hitung durasi
-        end_time = time.time()
-        self.duration = end_time - start_time
+        # Simpan waktu selesai
+        self.end_time = time.time()
+        self.final_cube = current_cube  # Simpan kondisi akhir kubus
 
-        # Simpan kondisi akhir setelah pencarian
-        final_state = copy.deepcopy(current_cube.data)
-        self.magic_cube = current_cube  # Perbarui magic_cube dengan solusi terbaik
-
-        # Tampilkan laporan
-        self.report(initial_state, final_state, current_cost)
+    def objective_function(self, cube_data):
+        original_data = self.magic_cube.data
+        self.magic_cube.data = cube_data
+        cost = self.magic_cube.objective_function()
+        self.magic_cube.data = original_data  # Kembalikan data asli
+        return cost
 
     def _random_position(self, different_from=None):
-        """
-        Menghasilkan posisi acak dalam kubus 3D.
-
-        Parameters:
-        - different_from: tuple posisi yang harus dihindari (opsional)
-
-        Returns:
-        - Tuple (x, y, z) yang mewakili posisi dalam kubus.
-        """
         size = self.magic_cube.size
         while True:
             position = (random.randint(0, size - 1),
@@ -86,39 +70,12 @@ class StochasticHillClimbing:
             if position != different_from:
                 return position
 
-    def report(self, initial_state, final_state, final_cost):
-        """
-        Tampilkan hasil akhir dari pencarian dengan format sesuai file random restart.
-        """
-        print("===== Laporan Hasil Stochastic Hill Climbing =====")
-        print(f"Durasi Pencarian       : {self.duration:.4f} detik")
-        print(f"Total Iterasi          : {self.iterations}")
-        print(f"Nilai Objective Awal   : {self.history[0]}")
-        print(f"Nilai Objective Akhir  : {final_cost}")
-        print("\nState Awal Kubus:")
-        print(self._format_cube(initial_state))
-        print("\nState Akhir Kubus:")
-        print(self._format_cube(final_state))
-
-        # Plot hasil
-        plt.figure(figsize=(10, 5))
-        plt.plot(self.history)
-        plt.xlabel('Iterasi')
-        plt.ylabel('Nilai Objective Function')
-        plt.title('Performa Stochastic Hill Climbing')
-        plt.grid(True)
-        plt.show()
+    def swap(self, cube_data, pos1, pos2):
+        x1, y1, z1 = pos1
+        x2, y2, z2 = pos2
+        cube_data[x1][y1][z1], cube_data[x2][y2][z2] = cube_data[x2][y2][z2], cube_data[x1][y1][z1]
 
     def _format_cube(self, cube_data):
-        """
-        Format data kubus untuk ditampilkan.
-
-        Parameters:
-        - cube_data: data kubus yang akan diformat
-
-        Returns:
-        - String yang mewakili kubus dalam format yang mudah dibaca.
-        """
         size = self.magic_cube.size
         cube_str = ""
         for z in range(size):
@@ -129,12 +86,33 @@ class StochasticHillClimbing:
             cube_str += '\n'
         return cube_str
 
-# Contoh penggunaan
+    def report(self):
+        duration = self.end_time - self.start_time
+        print("===== Laporan Hasil Stochastic Hill Climbing =====")
+        print(f"Durasi Pencarian       : {duration:.4f} detik")
+        print(f"Total Iterasi          : {self.iterations}")
+        print(f"Nilai Objective Awal   : {self.objective_values[0]}")
+        print(f"Initial State: ")
+        print(self._format_cube(self.initial_cube))
+        print(f"Nilai Objective Akhir  : {self.objective_values[-1]}")
+        print(f"Final State: ")
+        print(self._format_cube(self.final_cube))
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Plot hasil
+        plt.figure(figsize=(10, 5))
+        plt.plot(self.objective_values)
+        plt.xlabel('Iterasi')
+        plt.ylabel('Nilai Objective Function')
+        plt.title('Performa Stochastic Hill Climbing')
+        plt.grid(True)
+        plt.savefig(f'./data/steepest_ascent_hill_climbing_plot_{timestamp}.png', format='png')
+        plt.show()
+        
+
 if __name__ == "__main__":
-    # Asumsikan Anda memiliki kelas MagicCube yang sudah diimplementasikan
     cube_size = 5
     magic_cube = MagicCube(size=cube_size)
-    magic_cube.initialize_random()  # Metode untuk inisialisasi kubus secara acak
-
     shc = StochasticHillClimbing(magic_cube, max_trials=10000)
     shc.run()
+    shc.report()

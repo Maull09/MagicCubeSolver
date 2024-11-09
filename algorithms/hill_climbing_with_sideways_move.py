@@ -96,8 +96,10 @@ class HillClimbingWithSidewaysMove:
     
     def report(self):
         print("\nExperiment Report:")
-        print(f"Initial State: {self._format_cube(self.initial_cube)}")
-        print(f"Final State: {self._format_cube(self.final_cube)}")
+        print(f"Initial State: ")
+        print(self._format_cube(self.initial_cube))
+        print(f"Final State: ")
+        print(self._format_cube(self.final_cube))
         print(f"Final Objective Value: {self.objective_values[-1]}")
         print(f"Total Iterations: {self.iterations}")
         print(f"Total Sideways Moves: {self.sideways_moves}")
@@ -115,9 +117,8 @@ class HillClimbingWithSidewaysMove:
 
         # Save the plot with a timestamp in the filename
         plt.savefig(f'./data/hill_climbing_with_sideways_move_plot_{timestamp}.png', format='png')
-
-        # Display the plot
         plt.show()
+        
 if __name__ == "__main__":
     cube = MagicCube(size=5)
     hill_climber = HillClimbingWithSidewaysMove(cube, max_sideways=100)
