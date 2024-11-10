@@ -9,10 +9,8 @@ class GeneticAlgorithm:
     def __init__(self, magic_cube, amount_iteration, population_size, mutation_rate=0.01):
         self.magic_cube = magic_cube
         self.amount_iteration = amount_iteration
-
         self.population_size = population_size
         self.mutation_rate = mutation_rate
-
         self.population = []
         self.best_solution = None
         self.best_objective_value = float('inf')
@@ -23,41 +21,44 @@ class GeneticAlgorithm:
         self.final_state = None
 
     def initialize_population(self):
-        """Menghasilkan populasi awal dengan state kubus acak."""
+        """Generate initial population with random cube states."""
         self.population = [self.magic_cube.initialize_cube() for _ in range(self.population_size)]
     
     def calculate_fitness(self, individual):
-        """Menggunakan fungsi objektif dari magic cube sebagai ukuran fitness."""
-        self.magic_cube.data = individual  # Set cube state
-        return -self.magic_cube.objective_function()  # Gunakan negatif untuk memperlakukan nilai yang lebih kecil sebagai lebih baik
+        """Use the objective function of the magic cube as the fitness measure."""
+        self.magic_cube.data = individual  
+        return -self.magic_cube.objective_function()  
 
     def select_parents(self):
-        """Memilih dua orang tua menggunakan tournament_size."""
-        tournament_size = min(4, self.population_size)  # Safely set tournament size
+        """Select two parents using tournament selection."""
+        tournament_size = min(4, self.population_size) 
         parents = []
-        for _ in range(2):  # Membutuhkan dua orang tua
+        for _ in range(2):  # Need two parents
             candidates = random.sample(self.population, tournament_size)
             parents.append(min(candidates, key=self.calculate_fitness))
         return parents
 
     def crossover(self, parent1, parent2):
-        """Crossover dua induk dengan memilih baris secara acak dari setiap induk."""
+        """Perform crossover on two parents, ensuring unique values in each row."""
         child = []
         for layer1, layer2 in zip(parent1, parent2):
-            # Memilih baris secara acak dari salah satu orang tua
-            child_layer = [random.choice([r1, r2]) for r1, r2 in zip(layer1, layer2)]
+            child_layer = []
+            for row1, row2 in zip(layer1, layer2):
+                combined_row = list(set(row1 + row2))
+                random.shuffle(combined_row)  
+                child_layer.append(combined_row[:self.magic_cube.size])  
             child.append(child_layer)
         return child
 
     def mutate(self, individual):
-        """Melakukan mutasi pada individu dengan mengacak satu row dalam satu layer."""
+        """Mutate an individual by shuffling a row within a layer, maintaining unique values."""
         if random.random() < self.mutation_rate:
             layer = random.choice(individual)
             row = random.choice(layer)
             random.shuffle(row)
 
     def evolve_population(self):
-        """Menciptakan populasi baru melalui seleksi, crossover, dan mutasi."""
+        """Create a new population through selection, crossover, and mutation."""
         new_population = []
         while len(new_population) < self.population_size:
             parent1, parent2 = self.select_parents()
@@ -67,22 +68,23 @@ class GeneticAlgorithm:
         self.population = new_population
 
     def run(self):
-        """Run genetic algorithm untuk mengoptimalkan magic cube."""
+        """Run the genetic algorithm to optimize the magic cube."""
         self.start_time = time.time()
-        
         self.initialize_population()
         self.initial_state = copy.deepcopy(self.magic_cube.data)
 
         for iteration in range(self.amount_iteration):
             fitness_values = [self.calculate_fitness(individual) for individual in self.population]
             best_index = fitness_values.index(max(fitness_values))
-            best_fitness = -fitness_values[best_index]  # Mengubah kembali ke nilai positif untuk objective value
+            best_fitness = -fitness_values[best_index]  
 
             if best_fitness < self.best_objective_value:
                 self.best_objective_value = best_fitness
                 self.best_solution = self.population[best_index]
 
-            self.objective_values_history.append((iteration, best_fitness, sum(-f for f in fitness_values) / self.population_size))
+            # Track best and average objective values for plotting
+            avg_fitness = sum(-f for f in fitness_values) / self.population_size
+            self.objective_values_history.append((iteration, best_fitness, avg_fitness))
             
             elapsed_time = time.time() - self.start_time
             print(f"Iteration {iteration}: Objective = {best_fitness}, Time = {elapsed_time:.4f} seconds")
@@ -93,7 +95,7 @@ class GeneticAlgorithm:
         self.final_state = self.best_solution
 
     def plot_objective_values(self):
-        """Plot best dan average objective values selama iterasi."""
+        """Plot the best and average objective values over iterations."""
         iterations, best_values, avg_values = zip(*self.objective_values_history)
         plt.plot(iterations, best_values, label='Best Objective Value')
         plt.plot(iterations, avg_values, label='Average Objective Value')
@@ -104,7 +106,7 @@ class GeneticAlgorithm:
         plt.show()
 
     def report(self):
-        """Menampilkan hasil termasuk initial and final state, objective value, population size, iterations, and duration."""
+        """Display results including initial and final state, objective value, population size, iterations, and duration."""
         duration = self.end_time - self.start_time
         print("Initial State:")
         print(self.initial_state)
@@ -118,7 +120,6 @@ class GeneticAlgorithm:
         self.plot_objective_values()
 
 if __name__ == "__main__":
-    from cube.cube import MagicCube  
     amount_iteration = 100
     mutation_rate = 0.01
     population_size = 8

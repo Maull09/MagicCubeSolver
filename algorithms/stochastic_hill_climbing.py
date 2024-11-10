@@ -3,7 +3,7 @@ import copy
 import time
 import datetime
 import matplotlib.pyplot as plt
-from cube.cube import MagicCube  # Impor kelas MagicCube dari cube.py
+from cube.cube import MagicCube  
 
 class StochasticHillClimbing:
     def __init__(self, magic_cube, max_trials=10000):
@@ -12,9 +12,9 @@ class StochasticHillClimbing:
         self.iterations = 0
         self.start_time = None
         self.end_time = None
-        self.objective_values = []  # Menyimpan nilai objective function untuk setiap percobaan
-        self.initial_cube = copy.deepcopy(self.magic_cube.data)  # Salin kondisi awal kubus
-        self.final_cube = None  # Menyimpan kondisi akhir kubus
+        self.objective_values = []  
+        self.initial_cube = copy.deepcopy(self.magic_cube.data)  
+        self.final_cube = None  
 
     def run(self):
         # Simpan waktu mulai
@@ -52,13 +52,13 @@ class StochasticHillClimbing:
 
         # Simpan waktu selesai
         self.end_time = time.time()
-        self.final_cube = current_cube  # Simpan kondisi akhir kubus
+        self.final_cube = current_cube  
 
     def objective_function(self, cube_data):
         original_data = self.magic_cube.data
         self.magic_cube.data = cube_data
         cost = self.magic_cube.objective_function()
-        self.magic_cube.data = original_data  # Kembalikan data asli
+        self.magic_cube.data = original_data  
         return cost
 
     def _random_position(self, different_from=None):

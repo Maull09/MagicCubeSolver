@@ -21,8 +21,8 @@ class SteepestAscentHillClimbing:
         original_data = self.magic_cube.data
         self.magic_cube.data = cube_data
         objective_value = self.magic_cube.objective_function()
-        self.magic_cube.data = original_data  # Restore original data
-        return -objective_value  # Return negative for hill climbing
+        self.magic_cube.data = original_data  
+        return -objective_value  
 
     def find_best_neighbor(self):
         """Find the best neighboring configuration by checking all possible swaps."""

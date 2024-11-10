@@ -16,7 +16,7 @@ class RandomRestartHillClimbing:
         self.initial_cube_states = []  
         self.final_cube_states = []  
         self.restart_durations = []  
-        self.iterations_per_restart = []  # Track iterations for each restart
+        self.iterations_per_restart = []  
 
     def run(self):
         overall_start_time = time.time()
@@ -26,7 +26,7 @@ class RandomRestartHillClimbing:
             
             # Randomize initial state for each restart
             self.magic_cube.data = self.magic_cube.initialize_cube()
-            self.initial_cube_states.append(copy.deepcopy(self.magic_cube.data))  # Save initial state for reporting
+            self.initial_cube_states.append(copy.deepcopy(self.magic_cube.data))  
             
             # Copy randomized cube state for the steepest ascent hill climbing algorithm
             cube_copy = copy.deepcopy(self.magic_cube)
@@ -37,7 +37,7 @@ class RandomRestartHillClimbing:
             hill_climber.run()
             restart_end_time = time.time()
             self.restart_durations.append(restart_end_time - restart_start_time)
-            self.iterations_per_restart.append(hill_climber.iterations)  # Track iterations
+            self.iterations_per_restart.append(hill_climber.iterations)  
             
             # Append the objective values of this restart
             self.all_objective_values_by_restart.append(hill_climber.objective_values)
