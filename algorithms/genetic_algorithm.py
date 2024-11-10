@@ -25,13 +25,13 @@ class GeneticAlgorithm:
         self.population = [self.magic_cube.initialize_cube() for _ in range(self.population_size)]
     
     def calculate_fitness(self, individual):
-        """Use the objective function of the magic cube as the fitness measure."""
-        self.magic_cube.data = individual  
-        return -self.magic_cube.objective_function()  
+        """Use the objective function directly as fitness, aiming for lower values."""
+        self.magic_cube.data = individual  # Set cube state
+        return self.magic_cube.objective_function()  # Positive values, lower is better
 
     def select_parents(self):
-        """Select two parents using tournament selection."""
-        tournament_size = min(4, self.population_size) 
+        """Select two parents using tournament selection, aiming for lower fitness values."""
+        tournament_size = min(4, self.population_size)  # Safe tournament size
         parents = []
         for _ in range(2):  # Need two parents
             candidates = random.sample(self.population, tournament_size)
@@ -45,8 +45,8 @@ class GeneticAlgorithm:
             child_layer = []
             for row1, row2 in zip(layer1, layer2):
                 combined_row = list(set(row1 + row2))
-                random.shuffle(combined_row)  
-                child_layer.append(combined_row[:self.magic_cube.size])  
+                random.shuffle(combined_row)
+                child_layer.append(combined_row[:self.magic_cube.size])
             child.append(child_layer)
         return child
 
@@ -75,19 +75,18 @@ class GeneticAlgorithm:
 
         for iteration in range(self.amount_iteration):
             fitness_values = [self.calculate_fitness(individual) for individual in self.population]
-            best_index = fitness_values.index(max(fitness_values))
-            best_fitness = -fitness_values[best_index]  
+            best_index = fitness_values.index(min(fitness_values))
+            best_fitness = fitness_values[best_index]
 
             if best_fitness < self.best_objective_value:
                 self.best_objective_value = best_fitness
                 self.best_solution = self.population[best_index]
 
-            # Track best and average objective values for plotting
-            avg_fitness = sum(-f for f in fitness_values) / self.population_size
+            avg_fitness = sum(fitness_values) / self.population_size
             self.objective_values_history.append((iteration, best_fitness, avg_fitness))
             
             elapsed_time = time.time() - self.start_time
-            print(f"Iteration {iteration}: Objective = {best_fitness}, Time = {elapsed_time:.4f} seconds")
+            print(f"Iteration {iteration}: Best Objective = {best_fitness}, Average Objective = {avg_fitness}, Time = {elapsed_time:.4f} seconds")
 
             self.evolve_population()
 
@@ -104,6 +103,10 @@ class GeneticAlgorithm:
         plt.title('Genetic Algorithm Optimization of Magic Cube')
         plt.legend()
         plt.show()
+
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        plt.savefig(f'./data/genetic_algorithm_plot_{timestamp}.png', format='png')
 
     def report(self):
         """Display results including initial and final state, objective value, population size, iterations, and duration."""
