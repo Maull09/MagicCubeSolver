@@ -77,9 +77,9 @@ class HillClimbingWithSidewaysMove:
     def report(self):
         print("\nExperiment Report:")
         print(f"Initial State: ")
-        print(self._format_cube(self.initial_cube))
+        print((self.initial_cube))
         print(f"Final State: ")
-        print(self._format_cube(self.final_cube))
+        print((self.final_cube))
         print(f"Final Objective Value: {self.objective_values[-1]}")
         print(f"Total Iterations: {self.iterations}")
         print(f"Total Sideways Moves: {self.sideways_moves}")

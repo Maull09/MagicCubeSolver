@@ -75,17 +75,6 @@ class StochasticHillClimbing:
         x2, y2, z2 = pos2
         cube_data[x1][y1][z1], cube_data[x2][y2][z2] = cube_data[x2][y2][z2], cube_data[x1][y1][z1]
 
-    def _format_cube(self, cube_data):
-        size = self.magic_cube.size
-        cube_str = ""
-        for z in range(size):
-            cube_str += f"Layer {z + 1}:\n"
-            for y in range(size):
-                row = [str(cube_data[x][y][z]).rjust(3) for x in range(size)]
-                cube_str += ' '.join(row) + '\n'
-            cube_str += '\n'
-        return cube_str
-
     def report(self):
         duration = self.end_time - self.start_time
         print("===== Laporan Hasil Stochastic Hill Climbing =====")
@@ -93,10 +82,10 @@ class StochasticHillClimbing:
         print(f"Total Iterasi          : {self.iterations}")
         print(f"Nilai Objective Awal   : {self.objective_values[0]}")
         print(f"Initial State: ")
-        print(self._format_cube(self.initial_cube))
+        print((self.initial_cube))
         print(f"Nilai Objective Akhir  : {self.objective_values[-1]}")
         print(f"Final State: ")
-        print(self._format_cube(self.final_cube))
+        print((self.final_cube))
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         
         # Plot hasil

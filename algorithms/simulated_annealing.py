@@ -87,9 +87,9 @@ class SimulatedAnnealing:
         print(f"Total Iterations: {self.iterations}")
         print(f"Execution Time: {duration:.4f} seconds")
         print("\nInitial State:")
-        print(self._format_cube(self.initial_cube))
+        print((self.initial_cube))
         print("\nFinal State:")
-        print(self._format_cube(self.final_cube))
+        print((self.final_cube))
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         # Plot perubahan nilai objective function
         plt.figure(figsize=(12, 5))
