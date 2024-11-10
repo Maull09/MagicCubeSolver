@@ -6,8 +6,7 @@ import datetime
 from cube.cube import MagicCube
 
 class GeneticAlgorithm:
-    def __init__(self, magic_cube, amount_iteration, population_size, mutation_rate):
-        """Inisialisasi GeneticAlgorithm dengan parameter yang diperlukan"""
+    def __init__(self, magic_cube, amount_iteration, population_size, mutation_rate=0.01):
         self.magic_cube = magic_cube
         self.amount_iteration = amount_iteration
 
@@ -24,16 +23,16 @@ class GeneticAlgorithm:
         self.final_state = None
 
     def initialize_population(self):
-        """Menghasilkan populasi awal dengan state kubus acak."""
+        """Initialize the population with random cube states."""
         self.population = [self.magic_cube.initialize_cube() for _ in range(self.population_size)]
     
     def calculate_fitness(self, individual):
-        """Menggunakan fungsi objektif magic cube sebagai ukuran fitness."""
+        """Calculate the fitness of an individual based on the objective function."""
         self.magic_cube.data = individual  # Set cube state
         return -self.magic_cube.objective_function()  # Use negative to treat smaller values as better
 
     def select_parents(self):
-        """Memilih dua orang tua menggunakan seleksi turnamen."""
+        """Select two parents using tournament selection."""
         tournament_size = min(2, self.population_size)  # Safely set tournament size
         parents = []
         for _ in range(2):  # We need two parents
@@ -42,7 +41,7 @@ class GeneticAlgorithm:
         return parents
 
     def crossover(self, parent1, parent2):
-        """Proses crossover antara dua orang tua untuk menghasilkan keturunan."""
+        """Crossover two parents by randomly selecting rows from each parent."""
         child = []
         for layer1, layer2 in zip(parent1, parent2):
             # Randomly select rows from either parent
@@ -51,14 +50,14 @@ class GeneticAlgorithm:
         return child
 
     def mutate(self, individual):
-        """Melakukan mutasi pada individu dengan mengacak satu baris dalam satu layer."""
+        """Mutate an individual by randomly shuffling a row in a layer."""
         if random.random() < self.mutation_rate:
             layer = random.choice(individual)
             row = random.choice(layer)
             random.shuffle(row)
 
     def evolve_population(self):
-        """Menciptakan populasi baru melalui seleksi, crossover, dan mutasi."""
+        """Create a new population by selecting parents, performing crossover, and mutating."""
         new_population = []
         while len(new_population) < self.population_size:
             parent1, parent2 = self.select_parents()
@@ -68,10 +67,9 @@ class GeneticAlgorithm:
         self.population = new_population
 
     def run(self):
-        """Menjalankan algoritma genetika dan melacak kemajuan."""
+        """Run the genetic algorithm to optimize the magic cube."""
         self.start_time = time.time()
         
-        # Menginisialisasi populasi dan menyimpan initial state
         self.initialize_population()
         self.initial_state = copy.deepcopy(self.magic_cube.data)
 
@@ -120,13 +118,12 @@ class GeneticAlgorithm:
         self.plot_objective_values()
 
 if __name__ == "__main__":
-    from cube.cube import MagicCube  # Pastikan kelas MagicCube dapat diimport
-
+    from cube.cube import MagicCube  
     amount_iteration = 100
     mutation_rate = 0.01
     population_size = 8
 
-    magic_cube = MagicCube(size=5)  # Inisialisasi magic cube dengan ukuran 5x5x5
+    magic_cube = MagicCube(size=5)  
     ga_solver = GeneticAlgorithm(magic_cube, amount_iteration, population_size, mutation_rate)
     ga_solver.run()
     ga_solver.plot_objective_values()

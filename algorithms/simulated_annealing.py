@@ -77,17 +77,6 @@ class SimulatedAnnealing:
         self.final_cube = best_cube
         self.end_time = datetime.now()
         
-    def _format_cube(self, cube_data):
-        size = self.magic_cube.size
-        cube_str = ""
-        for z in range(size):
-            cube_str += f"Layer {z + 1}:\n"
-            for y in range(size):
-                row = [str(cube_data[x][y][z]).rjust(3) for x in range(size)]
-                cube_str += ' '.join(row) + '\n'
-            cube_str += '\n'
-        return cube_str
-
     def report(self):
         # Waktu eksekusi
         duration = (self.end_time - self.start_time).total_seconds()
@@ -97,9 +86,9 @@ class SimulatedAnnealing:
         print(f"Final Objective Value: {self.objective_values[-1]}")
         print(f"Total Iterations: {self.iterations}")
         print(f"Execution Time: {duration:.4f} seconds")
-        print("\nState Awal Kubus:")
+        print("\nInitial State:")
         print(self._format_cube(self.initial_cube))
-        print("\nState Akhir Kubus:")
+        print("\nFinal State:")
         print(self._format_cube(self.final_cube))
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         # Plot perubahan nilai objective function

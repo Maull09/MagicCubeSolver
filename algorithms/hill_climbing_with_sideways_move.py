@@ -73,26 +73,6 @@ class HillClimbingWithSidewaysMove:
 
         self.end_time = time.time()
         self.final_cube = copy.deepcopy(self.magic_cube.data)
-
-    def _format_cube(self, cube_data):
-        """
-        Format data kubus untuk ditampilkan.
-
-        Parameters:
-        - cube_data: data kubus yang akan diformat
-
-        Returns:
-        - String yang mewakili kubus dalam format yang mudah dibaca.
-        """
-        size = self.magic_cube.size
-        cube_str = ""
-        for z in range(size):
-            cube_str += f"Layer {z + 1}:\n"
-            for y in range(size):
-                row = [str(cube_data[x][y][z]).rjust(3) for x in range(size)]
-                cube_str += ' '.join(row) + '\n'
-            cube_str += '\n'
-        return cube_str
     
     def report(self):
         print("\nExperiment Report:")

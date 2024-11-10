@@ -42,6 +42,7 @@ def get_algorithm_parameters():
     elif SEARCH_ALGO == GENETIC_ALGORITHM:
         params['population_size'] = int(input("Enter population size for Genetic Algorithm: "))
         params['mutation_rate'] = float(input("Enter mutation rate for Genetic Algorithm (e.g., 0.01): "))
+        params['amount_iteration'] = int(input("Enter amount of iterations for Genetic Algorithm: "))
     elif SEARCH_ALGO == STOCHASTIC_HC:
         params['max_trials'] = int(input("Enter max trials for Stochastic Hill Climbing: "))
     return params
