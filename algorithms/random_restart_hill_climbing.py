@@ -60,6 +60,7 @@ class RandomRestartHillClimbing:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         
         print("\nExperiment Report:")
+        total_iterations = sum(self.iterations_per_restart)
         for i in range(self.max_restarts):
             print(f"\nRestart {i + 1}/{self.max_restarts}:")
             print(f"Initial State: {self.initial_cube_states[i]}")
@@ -71,6 +72,7 @@ class RandomRestartHillClimbing:
         print("\nBest Overall Solution:")
         print(f"Final Objective Value: {self.best_objective_value}")
         print(f"Best Final Cube State: {self.best_cube_state}")
+        print(f"Total Iterations Across All Restarts: {total_iterations}")
         print(f"Total Duration (all restarts): {self.total_duration:.4f} seconds")
 
         # Plot 1: Objective Function Value over Iterations (with Random Restarts)
