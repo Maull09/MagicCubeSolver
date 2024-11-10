@@ -95,7 +95,7 @@ class StochasticHillClimbing:
         plt.ylabel('Nilai Objective Function')
         plt.title('Performa Stochastic Hill Climbing')
         plt.grid(True)
-        plt.savefig(f'./data/steepest_ascent_hill_climbing_plot_{timestamp}.png', format='png')
+        plt.savefig(f'./data/stochastic_hill_climbing_plot_{timestamp}.png', format='png')
         plt.show()
         
 
