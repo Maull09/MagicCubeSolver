@@ -101,7 +101,7 @@ class SteepestAscentHillClimbing:
         plt.grid(True)
 
         # Save the plot with a timestamp in the filename
-        plt.savefig(f'./data/steepest_ascent_hill_climbing_plot_{timestamp}.png', format='png')
+        plt.savefig(f'src/data/steepest_ascent_hill_climbing_plot_{timestamp}.png', format='png')
 
         # Display the plot
         plt.show()

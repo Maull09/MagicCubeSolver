@@ -110,7 +110,7 @@ class GeneticAlgorithm:
 
         # Generate a timestamp and save the plot
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        plt.savefig(f'./data/genetic_algorithm_plot_{timestamp}.png', format='png')
+        plt.savefig(f'src/data/genetic_algorithm_plot_{timestamp}.png', format='png')
         
         # Display the plot after saving it
         plt.show()

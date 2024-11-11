@@ -125,7 +125,7 @@ class SimulatedAnnealing:
         plt.tight_layout()
         
         # Save the plot
-        plt.savefig(f'./data/simulated_annealing_plot_{timestamp}.png', format='png')
+        plt.savefig(f'src/data/simulated_annealing_plot_{timestamp}.png', format='png')
         plt.show()
         
 

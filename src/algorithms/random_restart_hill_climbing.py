@@ -101,7 +101,7 @@ class RandomRestartHillClimbing:
         plt.tight_layout()
 
         # Save the combined plot with a timestamp in the filename
-        plt.savefig(f'./data/random_restart_hill_climbing_combined_plot_{timestamp}.png', format='png')
+        plt.savefig(f'src/data/random_restart_hill_climbing_combined_plot_{timestamp}.png', format='png')
         plt.show()
 
 if __name__ == "__main__":
