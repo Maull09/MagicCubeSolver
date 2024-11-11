@@ -95,18 +95,26 @@ class GeneticAlgorithm:
 
     def plot_objective_values(self):
         """Plot the best and average objective values over iterations."""
+        # Unpack the data from objective_values_history
         iterations, best_values, avg_values = zip(*self.objective_values_history)
+        
+        # Plot best and average objective values
+        plt.figure()
         plt.plot(iterations, best_values, label='Best Objective Value')
         plt.plot(iterations, avg_values, label='Average Objective Value')
         plt.xlabel('Iterations')
         plt.ylabel('Objective Function Value')
         plt.title('Genetic Algorithm Optimization of Magic Cube')
+        plt.grid(True)
         plt.legend()
+
+        # Generate a timestamp and save the plot
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        plt.savefig(f'./data/genetic_algorithm_plot_{timestamp}.png', format='png')
+        
+        # Display the plot after saving it
         plt.show()
 
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        plt.savefig(f'./data/genetic_algorithm_plot_{timestamp}.png', format='png')
 
     def report(self):
         """Display results including initial and final state, objective value, population size, iterations, and duration."""

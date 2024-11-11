@@ -15,6 +15,7 @@ class SimulatedAnnealing:
         self.end_time = None
         self.objective_values = []
         self.acceptance_probabilities = []  # Store exp(-delta_e / current_temp)
+        self.local_optima_stuck_count = 0  # Track frequency of getting stuck
         self.initial_cube = copy.deepcopy(self.magic_cube.data)
         self.final_cube = None
 
@@ -65,6 +66,9 @@ class SimulatedAnnealing:
                 if current_objective < best_objective:
                     best_objective = current_objective
                     best_cube = copy.deepcopy(self.magic_cube.data)
+            else:
+                # Increment the counter if we are "stuck" in a local optimum
+                self.local_optima_stuck_count += 1
             
             # Store values
             self.objective_values.append(current_objective)
@@ -93,6 +97,7 @@ class SimulatedAnnealing:
         print(f"Final Objective Value: {self.objective_values[-1]}")
         print(f"Total Iterations: {self.iterations}")
         print(f"Execution Time: {duration:.4f} seconds")
+        print(f"Frequency of getting stuck in local optima: {self.local_optima_stuck_count}")
         print("\nInitial State:")
         print((self.initial_cube))
         print("\nFinal State:")
