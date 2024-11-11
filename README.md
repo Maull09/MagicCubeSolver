@@ -34,7 +34,7 @@ pip install matplotlib
    ```
 2. Masuk ke directory
    ```
-   cd MagicCubeSolver
+   cd MagicCubeSolver/src
    ```
 3. Jalankan program
    ```
