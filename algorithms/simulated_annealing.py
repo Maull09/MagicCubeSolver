@@ -14,8 +14,8 @@ class SimulatedAnnealing:
         self.start_time = None
         self.end_time = None
         self.objective_values = []
-        self.acceptance_probabilities = []  # Store exp(-delta_e / current_temp)
-        self.local_optima_stuck_count = 0  # Track frequency of getting stuck
+        self.acceptance_probabilities = []  
+        self.local_optima_stuck_count = 0 
         self.initial_cube = copy.deepcopy(self.magic_cube.data)
         self.final_cube = None
 
